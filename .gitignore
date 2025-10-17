@@ -1,0 +1,7 @@
+# .gitignore file
+
+# Ignore Node.js modules
+node_modules
+
+# Ignore the secret service account key
+service-account-key.json

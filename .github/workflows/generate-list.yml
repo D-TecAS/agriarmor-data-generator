@@ -1,0 +1,40 @@
+name: Generate Equipment Master List
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-list:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    # UPDATED: Tell npm to run inside the nested folder
+    - name: Install dependencies
+      run: npm install
+      working-directory: agriarmor-scripts
+
+    - name: Authenticate with Google Cloud
+      id: auth
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}'
+
+    # UPDATED: Tell node to run inside the nested folder
+    - name: Run the Generation Script
+      run: node generate-list.js
+      working-directory: agriarmor-scripts
+
+    # UPDATED: Tell the artifact uploader where to find the file
+    - name: Upload Master List as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: master-equipment-list
+        path: agriarmor-scripts/supplemental_list_1.json
