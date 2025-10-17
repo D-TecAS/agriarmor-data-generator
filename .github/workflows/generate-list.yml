@@ -16,10 +16,9 @@ jobs:
       with:
         node-version: '20'
 
-    # UPDATED: Tell npm to run inside the nested folder
+    # This will now run in the correct, top-level directory
     - name: Install dependencies
       run: npm install
-      working-directory: agriarmor-scripts
 
     - name: Authenticate with Google Cloud
       id: auth
@@ -27,14 +26,12 @@ jobs:
       with:
         credentials_json: '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}'
 
-    # UPDATED: Tell node to run inside the nested folder
+    # This will also run in the correct directory
     - name: Run the Generation Script
       run: node generate-list.js
-      working-directory: agriarmor-scripts
 
-    # UPDATED: Tell the artifact uploader where to find the file
     - name: Upload Master List as Artifact
       uses: actions/upload-artifact@v4
       with:
         name: master-equipment-list
-        path: agriarmor-scripts/supplemental_list_1.json
+        path: supplemental_list_1.json # Make sure this matches your script's OUTPUT_FILE
